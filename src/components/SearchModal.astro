@@ -37,7 +37,7 @@ import { url } from '../lib/site';
     searchInitialized = true;
     try {
       await import(pagefindDir + 'pagefind-ui.js');
-      new PagefindUI({ element: '#pagefind-search', showSubResults: true, showImages: false });
+      new PagefindUI({ element: '#pagefind-search', bundlePath: pagefindDir, showSubResults: true, showImages: false });
       searchDialog.querySelector('#pagefind-search input')?.focus();
     } catch {
       document.getElementById('search-dev-note').hidden = false;
