@@ -7,11 +7,18 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Pagefind UI dark-mode variables (used by the search modal) */
-.dark {
+/* Pagefind sets its variable defaults on the .pagefind-ui element itself,
+   so dark-mode overrides must target that element, not an ancestor */
+.dark .pagefind-ui {
   --pagefind-ui-primary: #fbbf24;
   --pagefind-ui-text: #e2e8f0;
   --pagefind-ui-background: #0f172a;
   --pagefind-ui-border: #334155;
   --pagefind-ui-tag: #1e293b;
+}
+
+.dark .pagefind-ui mark {
+  background-color: #fbbf24;
+  color: #0f172a;
+  border-radius: 0.125rem;
 }
