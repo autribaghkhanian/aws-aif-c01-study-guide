@@ -1,0 +1,106 @@
+---
+layout: ../layouts/ContentLayout.astro
+title: "Domain 4 — Guidelines for Responsible AI"
+subtitle: "14% of the exam"
+description: "The six pillars, bias and variance, transparency and explainability, AWS responsible-AI tooling, and legal risks."
+---
+import ComparisonTable from '../components/ComparisonTable.astro';
+import Callout from '../components/Callout.astro';
+
+## 4.1 The Six Pillars
+
+<ComparisonTable
+  caption="The six responsible-AI pillars"
+  columns={['Pillar', 'Definition', 'Techniques / notes']}
+  rows={[
+    ['Bias', 'Systematic favoritism/prejudice → skewed results', 'Anti-bias metrics, correction techniques; can perpetuate inequality'],
+    ['Fairness', 'Impartial, equitable outcomes', '<strong>Individual fairness</strong> (similar people, similar treatment) vs. <strong>group fairness</strong> (groups similar in aggregate); critical in hiring/lending/justice'],
+    ['Inclusivity', 'Serves all demographics incl. underrepresented groups', 'Diverse dev teams, inclusive training data, all users considered'],
+    ['Robustness', 'Reliable under varied conditions incl. <strong>adversarial attack</strong>', 'Adversarial training; edge-case testing'],
+    ['Safety', 'No harm to humans/environment', 'Predictability, transparent decisions, error recovery; critical in healthcare/AVs'],
+    ['Veracity', 'Truthful, accurate output', 'The anti-hallucination pillar; verified data integrity + explainability'],
+  ]}
+/>
+
+## 4.2 Responsible Dataset Characteristics
+
+- **Inclusivity** — wide range of people/cultures/perspectives (gender, race, age, dialects, accessibility)
+- **Diversity** — varied data reflecting real-world complexity (demographics, urban/rural, developed/developing) → better generalization
+- **Curated sources** — reliable, high-quality (verified academic/government databases, expert annotations) → integrity, less noise
+- **Balanced** — equal/proportionate class representation → avoids **class imbalance**; addresses under-/over-sampling
+
+## 4.3 Bias & Variance
+
+*The statistical pair — distinct from fairness-bias.*
+
+- **Bias** (statistical) — error from an **oversimplified model** approximating a real problem
+- **Variance** — error from **sensitivity to small fluctuations** in training data
+- **Overfitting** — model memorizes training data (noise included); training error → ~0 but **validation error bottoms out then climbs**; = low bias + **high variance**; cause: excess complexity or a too-small fine-tuning set
+- **Underfitting** — model too simple to capture patterns; training AND validation error both stay high; = **high bias** + low variance
+- Goal: the bias–variance trade-off sweet spot
+- Real-world effects: statistical bias → wrong specifically for certain groups (facial recognition); high variance → unpredictable generalization (hiring model favoring clones of past hires)
+- Sources of fairness-bias: **training data bias** (skewed/incomplete data) and **algorithmic bias** (model design)
+
+## 4.4 Transparency & Explainability
+
+- **Transparency** — internal processes are **visible and interpretable**; traceable decisions; typical of simple models (decision trees, linear regression); easier to debug, trust, and deploy in regulated industries
+- **Explainability** — output can be **explained in human terms**, even for complex models; includes **post-hoc explanations of black boxes**
+- Non-transparent/un-explainable — deep neural nets, GANs; high accuracy on complex tasks, but debugging/trust/accountability suffer
+- **Interpretability** — the ability to explain *why* a specific decision was made
+- Trade-off: simple = trustworthy but may underperform; complex = powerful but opaque
+
+### Safety ↔ transparency trade-offs
+
+- Transparency helps detect/correct harm — but may **expose exploitable details**
+- Safety layers (filters, guardrails) can **reduce performance/effectiveness** and business value
+- **High transparency + low safety** = simple interpretable model that may miss needed complexity; **low transparency + high safety** = deep net that performs but can't be interpreted
+- Pitfalls: **overfitting to safety** (overly conservative, uncreative output) · no cross-industry standardization · stakeholder/business-value trade-offs
+
+## 4.5 AWS Responsible-AI Tooling
+
+| Tool | Role |
+|---|---|
+| **Bedrock Guardrails** | Customizable safeguards on Bedrock: **content filters** (hate/violence), **custom denied topics**, **PII/sensitive-info redaction**, **hallucination detection via contextual grounding** |
+| **SageMaker Clarify** | Detect & mitigate **bias** — during training (before deployment) and continuing in production; decision-making insight |
+| **SageMaker Model Monitor** | Production **drift** watch: model drift, data drift, feature distribution, data quality, performance degradation; auto-notifications, no manual metric setup |
+| **Amazon A2I (Augmented AI)** | **Human review** in the prediction loop — verify or override predictions; adaptable (healthcare, finance) |
+| **SageMaker Model Cards** | **Version-controlled governance documentation**: overview, intended uses, **risk rating**, evaluation metrics, training details; supports audits |
+| **Comprehend Medical** | Detects medical-specific sensitive information (complements Guardrails in health workloads) |
+
+<Callout>
+  <strong>Guardrails</strong> = filter the output · <strong>Clarify</strong> = bias · <strong>Model Monitor</strong> = drift · <strong>A2I</strong> = humans · <strong>Model Cards</strong> = paperwork
+</Callout>
+
+### Model Card risk ratings
+
+- **Low** — reliable/safe for intended purpose (well-tested e-commerce recommender)
+- **Medium** — mostly suitable; some performance/fairness concerns; monitor (churn model on limited data)
+- **High** — **known limitations**: bias, poor generalization, performance issues; don't deploy without extensive validation (racially biased facial recognition for law enforcement)
+- **Unknown** — insufficient information (brand-new model on experimental data, never in production)
+
+### Reference build: healthcare virtual assistant
+
+Bedrock (FMs) + Guardrails (filter/redact/ground) + Comprehend Medical (medical PII) + SageMaker (tuning on health data) + IAM (access control) + Lambda (real-time content checks) + CloudWatch (metrics, logs, **alarms** when harmful content slips through)
+
+## 4.6 Legal Risks of GenAI
+
+- **IP infringement** — content resembling copyrighted work; unresolved ownership of AI output (user? training-data owners?); derivative-work disputes
+- **Biased/discriminatory output** — potential **anti-discrimination law** violations (hiring, lending)
+- **Loss of customer trust** — opaque decisions, error-driven experiences; need **clear AI-use disclosure**
+- **End-user risks** — privacy violations, data misuse, users generating harmful/defamatory content with legal repercussions
+- **Hallucinations** — misinformation spread; liability for false authoritative content (fake article moving a stock)
+
+## 4.7 Environmental Impact & Model Right-Sizing
+
+- Large models → more powerful hardware → more energy; scale example: GPT-4 training ≈ tens of MWh (a car's lifetime energy)
+- Practices: **efficient algorithms**, lighter versions of large models, **carbon-aware training** (renewables/offsets), efficiency metrics (**performance per unit energy**), sustainable cloud providers, carbon-offset/neutral programs
+- Predictive-maintenance lesson: **a decision tree or simple regression may be all you need — not an LLM.** Right-size the model to the problem
+
+## 4.8 Human-Centered Design
+
+Products that are intuitive, easy to use, and meet users' needs; for AI: understandable, explainable, effective.
+
+- **Amplified decision-making** (high-stakes support): clarity, simplicity (no overload), usability for all levels, **reflexivity** (promotes reflection), **accountability** (consequences attach to decisions)
+- **Unbiased decision-making**: identify/assess biases, transparent fair processes, **train the decision-makers** to spot and mitigate bias
+- **Human + AI learning**: **cognitive apprenticeship** (AI learns from human guidance), personalization, user-centered tooling
+- **RLHF** — [see §3.7](../domain-3/#37-customizing-foundation-models--the-cost-ladder); the human-feedback alignment loop
