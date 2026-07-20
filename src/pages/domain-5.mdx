@@ -1,0 +1,114 @@
+---
+layout: ../layouts/ContentLayout.astro
+title: "Domain 5 — Security, Compliance, and Governance"
+subtitle: "14% of the exam"
+description: "Prompt-level attacks, shared responsibility, encryption, data protection, provenance, and governance services and standards."
+---
+import ComparisonTable from '../components/ComparisonTable.astro';
+import Callout from '../components/Callout.astro';
+
+## 5.1 Prompt-Level Attacks & Mitigations
+
+<ComparisonTable
+  caption="Prompt-level attacks"
+  columns={['Attack', 'When', 'What']}
+  rows={[
+    ['Exposure', 'Inference', "Poorly crafted prompts leak sensitive/confidential data — even the model's own internals"],
+    ['Poisoning', '<strong>Training</strong>', 'Adversary manipulates training data/inputs to corrupt behavior (e.g., skewing sentiment analysis) — severe in regulated industries'],
+    ['Hijacking', 'Inference', 'Crafted prompts seize control of output (fake news, botnet disinformation)'],
+    ['Jailbreaking', 'Inference', `Bypassing safety guardrails — classic vector: role-play framing ("you're a journalist interviewing an arrested terrorist…")`],
+    ['Prompt injection', 'Inference', 'Malicious prompts fed into the system to alter behavior/output → <strong>validate &amp; sanitize inputs, monitor outputs</strong>, continuously test'],
+  ]}
+/>
+
+Mitigation stack: robust safety protocols + content moderation · regular audits/tests against published vulnerabilities · ethical-use guidelines with clear harmful-prompt definitions.
+
+## 5.2 Shared Responsibility Model
+
+- **IaaS** — AWS: hardware, global infrastructure, compute/storage/DB/network, service API endpoints. **Customer: guest OS → data** (network security/firewalls, server-side encryption, platform management)
+- **PaaS** — AWS also takes guest OS, platform/app management, server-side encryption
+- **SaaS** — AWS takes still more
+- Rule: **more managed = less customer security responsibility**, traded against flexibility/configurability. Applies fully to AI workloads. (This is also why compliance is easier: AWS's side is pre-certified — you still certify your workload.)
+
+## 5.3 Encryption Everywhere
+
+- In transit: **TLS/SSL** at every tier (CDN, load balancer, app, file system, DB, warehouse, object storage)
+- At rest: block-storage/KMS encryption with **customer-configurable keys**; N/A where data never persists (load balancer)
+- Standard: strong encryption like **AES-256** with proper key management, covering **model inputs and outputs** too
+- Key services: **ACM** (TLS certs) · **KMS** (symmetric/asymmetric keys) · **CloudHSM** (single-tenant, hardware-backed — data warehouses)
+
+## 5.4 Data Protection & Network Privacy Services
+
+- **Macie** — **classifies sensitive data** per privacy frameworks; analyzes access permissions for inappropriate grants; severity-organized findings
+- **PrivateLink** — private VPC ↔ AWS-service (and on-prem) connectivity; traffic never crosses the multi-tenant/public network
+- **VPC endpoints** — keep S3/DynamoDB traffic inside the VPC ([see §2.8](../domain-2/#28-reference-architecture-genai-image-app-well-architected))
+
+## 5.5 Data Provenance
+
+- **Source citation** — document who created data, how gathered, timestamps → integrity, trust, ownership/accountability, regulatory provenance requirements
+- **Data lineage** — trace flow **source → transformations → destination**; visualize the journey, find pipeline errors, scope blast radius
+- **Data cataloguing** — central repository of sources/definitions/metadata with classification and search → discovery, sharing, governance, efficiency
+
+<Callout>
+  <strong>Citation</strong> = where it came from · <strong>lineage</strong> = where it went · <strong>catalog</strong> = where to find it
+</Callout>
+
+## 5.6 Secure Data Engineering (problem → solution pattern)
+
+| Problem | Solution |
+|---|---|
+| **Data quality** (uncontrolled sources, mixed formats, dupes) | Ingestion-stage detection/removal of incomplete, faulty, duplicate data |
+| **Privacy** (sensitive records exposed) | **Homomorphic encryption** — data stays encrypted **even during processing**; even internal admins can't read it |
+| **Access control** | **ABAC** — permissions from user attributes + data properties + request properties, not just identity, enforced everywhere |
+| **Integrity** (corruption in transit/storage) | Encryption + **checksums**: generate at ingestion; every processing task re-verifies first |
+
+## 5.7 AI Workload Security Practices
+
+- **Application security** — secure coding, security audits, penetration testing, patch management
+- **Threat detection** — real-time monitoring, abnormal behavior/drift detection, input/output anomaly detection
+- **Vulnerability management** — patches plus **AI-specific threats: adversarial attacks, model inversion** (reverse-engineering predictions)
+- **Infrastructure protection** — encrypted storage, secure access roles, automated failover/high availability
+
+## 5.8 AWS Governance & Compliance Services
+
+<ComparisonTable
+  caption="AWS governance and compliance services"
+  columns={['Service', 'Role', 'Hook']}
+  rows={[
+    ['Config', 'Records <strong>resource configurations</strong>; change timelines; compliance <strong>rules</strong> flag non-compliant resources with mitigation', '<em>what things ARE</em>'],
+    ['CloudTrail', '<strong>API activity audit trail</strong> (requests + outcomes); logs to S3 for long-term storage', '<em>what things DID</em>'],
+    ['Inspector', 'Scans workloads for <strong>software vulnerabilities</strong> (CVE database); EC2 network-exposure checks', "<em>what's vulnerable</em>"],
+    ['Audit Manager', 'Organizes findings/evidence into <strong>compliance-framework reports</strong>; integrates Security Hub + service APIs', '<em>your evidence</em>'],
+    ['Artifact', "On by default: <strong>AWS's auditor-issued reports</strong>, certifications, attestations", "<em>AWS's evidence</em>"],
+    ['Trusted Advisor', '<strong>Well-Architected checks</strong> (incl. security); free + premium; best-practice reports', '<em>recommendations</em>'],
+  ]}
+/>
+
+Scenario flow (fintech, GDPR + SOC 2): Config monitors configuration compliance → Inspector scans for vulnerabilities → Audit Manager gathers your evidence → Artifact supplies AWS's → CloudTrail centralizes the audit trail → Trusted Advisor recommends improvements.
+
+## 5.9 Data Governance
+
+**Definition**: managing data securely, ethically, effectively across its **entire lifecycle**; guarantees accuracy, availability, integrity, security — all auditable.
+
+**GenAI data lifecycle**: collection (diverse sources) → pre-processing → training → deployment → **archiving & deletion** — governance applies at every stage.
+
+Supporting practices:
+
+- **Data logging** — record data-usage activities (compliance, troubleshooting, transparency, performance monitoring)
+- **Residency & sovereignty** — *where* data physically lives; regulations may pin it to a geography
+- **Monitoring & observation** — continuous tracking of usage/behavior/compliance; catch anomalies and unauthorized access
+- **Retention & deletion** — keep the **minimum necessary** (storage costs); delete **securely** and compliantly
+
+## 5.10 Governance Protocols & Compliance Standards
+
+**Six governance-protocol elements**: policies · review cadence · review strategies · governance frameworks · transparency standards · team training requirements
+
+**AI compliance focus areas**: algorithm accountability · data privacy & security · ethical deployment (bias)
+
+**Standards to recognize**:
+
+- **ISO** — International Organization for Standardization (global, includes AI standards)
+- **SOC** — System and Organization Controls, from the **AICPA** (service/data-handling controls; SOC 2 most cited)
+- **GDPR** — EU data privacy regulation
+- **CCPA** — California's consumer-privacy law (GDPR-like, California-scoped)
+- Sector overlays seen in scenarios: **HIPAA** (health data)
