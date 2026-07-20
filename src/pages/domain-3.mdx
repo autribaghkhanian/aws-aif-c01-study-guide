@@ -1,0 +1,176 @@
+---
+layout: ../layouts/ContentLayout.astro
+title: "Domain 3 — Applications of Foundation Models"
+subtitle: "28% of the exam — the biggest domain"
+description: "Model selection, inference parameters, prompt engineering, RAG and vector databases, fine-tuning, agents, and evaluation."
+---
+import ComparisonTable from '../components/ComparisonTable.astro';
+import Callout from '../components/Callout.astro';
+import StepFlow from '../components/StepFlow.astro';
+
+## 3.1 Model Selection
+
+**Primary question: what modality?**
+
+- **Text** — creative/conversational → general-purpose model; legal/financial/compliance → fine-tuned; technical/scientific + logic → approaching custom
+- **Images** — similar model families; decision is cost/resources
+- **Audio** — speech, music, even white noise
+- **Video** — most resource-intensive (why it lags)
+- **Multimodal** — most complex models
+
+**Secondary criteria** (the GlobalTech chatbot checklist — 8 items): **cost** (licensing + compute) · **modality** · **latency** (accurate-but-slow fails real-time needs) · **multilingual support** (or split translation into a separate model) · **model size** (memory/CPU/GPU/storage vs. your infrastructure) · **complexity** (accuracy vs. tuning/training burden) · **customization** (fine-tunable with your data, brand voice) · **input/output token length** (long queries, answers, whole conversations without cutoff)
+
+**Universal trade-offs**: speed → smaller model; accuracy → larger/slower; both → extraordinary cost. Constraints force sub-optimal (smaller) choices. Strict **GRC** requirements may force on-prem/private hosting.
+
+## 3.2 Inference Parameters
+
+- **Temperature** — randomness. Low = deterministic, high-probability tokens; high = diverse/creative, lower-probability tokens allowed
+- **Top K** — the **count** of candidate tokens considered (low = only the likeliest)
+- **Top P** — the **cumulative probability mass** of candidates considered (a percentage, not a count)
+- **Output length** — min/max tokens; penalties on repetition/frequency can also shape length; overlaps with prompt engineering ("3 sentences or less")
+
+Worked example ("The sky is filled with ___": stars 0.6, clouds 0.3, dragons 0.1): high temperature boosts dragons' chances; Top K=2 removes dragons from consideration entirely; Top P=0.8 keeps stars+clouds likely but leaves dragons a chance.
+
+<Callout>
+  <strong>Temperature</strong> = how adventurous · <strong>Top K</strong> = how many menu items · <strong>Top P</strong> = how much of the probability pie
+</Callout>
+
+## 3.3 Prompt Structure & Priority
+
+Elements: **system message** (role the LLM assumes; may be a server-side default) · **user message** (the classic prompt) · **assistant message** (tone/format of the response, e.g., "JSON") · **contextual data** (RAG lives here) · **model bias** (the model's ingrained tendencies)
+
+**Priority order**: model bias overrides everything → then system message overrides the rest of the prompt → assistant message formats the output. You cannot prompt your way past model bias; system outranks user.
+
+## 3.4 Prompt Engineering
+
+**Definition**: designing/refining prompts to optimize model performance → quality, guided behavior, accuracy, business value.
+
+**Components**: **context** (background: auto-included conversation history up to the token limit, user details, provided docs/RAG) · **instruction** (the task — with **clarity, specificity, brevity**) · **negative prompts** (what NOT to do: "no personal opinions," "avoid jargon"). Labeling the sections explicitly in the prompt helps.
+
+**Techniques** (identify from a description):
+
+| Technique | Signature |
+|---|---|
+| **Zero-shot** | Task, no examples |
+| **Single/one-shot** | One guiding example |
+| **Few-shot** | Multiple examples to learn the pattern (bigger payoff on harder tasks) |
+| **Chain-of-thought** | Step-by-step reasoning laid out: define the problem, edge cases, expected outputs, "use an existing library" → cleaner, more accurate results |
+| **Prompt templates** | Predefined fill-in structure (e.g., JSON of purpose/input/output/examples); **version-controllable, team-shareable**, close to what the backend consumes |
+
+**Best practices**: clear & specific beats generic ("main causes of climate change and impact on sea levels" vs. "tell me about climate change") · experiment with wording/structure · set guardrails in the prompt ("200 words or less… only technology challenges") · use discovery prompts for insight · break complex queries into parts (economic impacts / social effects as separate prompts)
+
+## 3.5 RAG (Retrieval Augmented Generation)
+
+**Definition**: augmenting LLM output by referencing a **knowledge base outside the model's training data**, retrieved at query time and added to the prompt.
+
+**Knowledge-base implementations**:
+
+- **Relational/index (e.g., Elasticsearch)** — keyword search → matching docs to the LLM
+- **Vector database** (most common) — chunk → embed (transformer encoder) → store → **similarity search** with the embedded query
+- **Hybrid** — keyword + similarity (sequential or parallel), optionally **re-ranked** (e.g., boost results found by both)
+- **Graph RAG** — vectors + graph DB; **structure-aware chunking**; returns closest chunk *plus* related chunks from the knowledge graph
+- **Direct model integration** — fine-tuning the knowledge in = *not RAG anymore*
+
+**Benefits**: improved accuracy (the big one) · **source attribution** → transparency/explainability · contextual relevance (you pick the corpus) · strong vertical/domain handling
+
+**Challenges**: pipeline complexity · added latency (search + LLM) · dependent on retrieval quality · extra infrastructure to host · harder/costlier tuning & maintenance
+
+## 3.6 Vector Databases
+
+- **Vector DB** — specialized store for high-dimensional embeddings; fast **similarity / nearest-neighbor** search
+- 2D intuition: embed words → semantically similar words cluster geometrically; query "fruit" lands among the fruits; which neighbors return depends on search parameters
+- Real embeddings are hundreds/thousands of dimensions
+
+### AWS vector store options
+
+<ComparisonTable
+  caption="AWS vector store options"
+  columns={['Service', 'Type', 'Serverless?', 'Notes']}
+  rows={[
+    ['OpenSearch', 'Managed search (text + vector)', 'Yes', '<strong>The only one that can arrange embedding generation (externally)</strong>; keyword + vector search'],
+    ['Aurora PostgreSQL', 'Cloud-native relational', 'Yes', '<strong>pgvector</strong> plugin; store/search only'],
+    ['RDS PostgreSQL', 'Traditional managed relational', '<strong>No</strong>', '<strong>pgvector</strong>; store/search only'],
+    ['Neptune', 'Managed <strong>graph</strong> DB', 'Yes', 'Gremlin/SPARQL clients; natural fit for graph RAG'],
+    ['DocumentDB', 'MongoDB-compatible document store', 'No', 'Store/search only'],
+  ]}
+/>
+
+<Callout title="Exam fact">
+  Every option except OpenSearch requires embeddings to be <strong>generated before insertion</strong>.
+</Callout>
+
+## 3.7 Customizing Foundation Models — the Cost Ladder
+
+Low → high effort/cost:
+
+<StepFlow
+  steps={[
+    { title: 'In-context learning' },
+    { title: 'RAG' },
+    { title: 'Fine-tuning' },
+    { title: 'Pre-training', note: 'build your own' },
+  ]}
+/>
+
+<ComparisonTable
+  caption="Customization methods compared"
+  columns={['Method', 'Compute', 'Data', 'Speed', 'Watch out']}
+  rows={[
+    ['In-context learning', 'Low (no training)', 'None', 'Instant, mid-conversation', "Limited customization; bounded by model's bias/guardrails; resets per conversation"],
+    ['RAG', 'Moderate–high, spread out (ingestion cost + search latency)', 'Your document corpus', 'Moderate', 'Extra infrastructure tier, data management'],
+    ['Fine-tuning', 'Moderate (GPUs/TPUs)', 'Small can work', '<strong>15–30 minutes possible</strong>', '<strong>Overfitting</strong> if the dataset is small/unrepresentative'],
+    ['Pre-training', 'Very high (GPUs/TPUs, time)', 'Massive, high-quality, pre-processed', 'Slowest', 'Needs deep expertise; payoff = highest potential performance'],
+  ]}
+/>
+
+**Build vs. buy decision factors**: required performance vs. investment (business value) · availability of high-quality **domain data** (little data → fine-tune, don't build) · expertise (from-scratch demands the most). Most workloads don't need from-scratch.
+
+### Fine-tuning methods
+
+- **Instruction tuning** — retrain on **prompt + desired-output pairs** (structured/JSON); improves command execution; great for interactive apps (Alexa: "play my favorite playlist" → action)
+- **Domain adaptation** — fine-tune on a domain corpus (legal/medical); ROSS Intelligence on case law/statutes; **combining with RAG is even stronger and cuts hallucinations**
+- **Transfer learning** — reuse a pre-trained model for a **new related task** (BERT → sentiment analysis), optionally fine-tune further
+- **Continuous pre-training** — periodically extend training with fresh data; stays current, gradually reduces bias/toxicity (X/Twitter feeding recommendation models new posts/trends)
+
+### Data preparation for FM training
+
+- **Curation** (two passes): rigorous selection (drop irrelevant and **low-quality** data) + contextual relevance check — required even for fine-tuning
+- **Governance & compliance**: framework for data use/storage/access at scale; follow GDPR/HIPAA-style controls
+- **Labeling**: clear high-quality labels; **annotation accuracy** may need subject-matter experts
+- **Diversity**: representative across demographics/contexts; mitigate found bias via **adversarial training** or fine-tuning with **counterexamples**
+- **Size**: **quality over quantity** — enough to capture nuance without overfitting
+- **RLHF** — human feedback (thumbs up/down, expert review) fed back into training; aligns the model with human goals/expectations; boosts satisfaction (also a human-centered design principle)
+
+## 3.8 Generative AI Agents
+
+- Generic agent = software acting autonomously on **predefined rules** (static)
+- **GenAI agent** = generative AI inside agent software, for tasks rigid rules can't handle
+- News-curation scenario — which task needs which:
+  - Fetch article lists, check a deny list → **plain code**
+  - Article length → character count works, but GenAI can intelligently strip headers/footers first
+  - **Relevance scoring, summarization, sentiment** → **LLM**
+- Architecture pattern: **scheduler → job-initiator function** (reads config from parameter storage) → **message queue** → LLM relevance-scoring function with a **threshold** → second queue → LLM summary + sentiment function → **NoSQL store** for the UI
+- Design lessons: event-driven, queue-decoupled; LLMs only where judgment is needed; **account for nondeterminism in thresholds** (same input, different scores)
+- AWS tie-in: **Bedrock Agents / AgentCore** provide managed agent orchestration
+
+## 3.9 Evaluating Foundation Models
+
+### Automated metrics
+
+- **ROUGE** (Recall-Oriented Understudy for Gisting Evaluation) — **summarization**; overlap between generated and reference text; higher = better
+  - **ROUGE-N** — N-gram overlap (ROUGE-1 = unigrams; e.g., 8 of 10 unigrams shared → 0.8)
+  - **ROUGE-L** — **longest common subsequence**
+  - N-gram = contiguous sequence of N items (words/characters/punctuation)
+- **BLEU** (Bilingual Evaluation Understudy) — **machine translation**; N-gram comparison against a reference translation; penalizes overly short translations
+- **BERTScore** — **semantic similarity** via BERT embeddings (meaning, not exact words): embed both → vector similarity → precision/recall → **F1**
+
+<Callout>
+  <strong>ROUGE</strong> = summaries · <strong>BLEU</strong> = translation · <strong>BERTScore</strong> = meaning
+</Callout>
+
+### Human evaluation vs. benchmarks
+
+- **Human assessors** — open conversation, Q&A; judge coherence, relevance, factuality, quality. The **gold standard**, but slow, expensive, unscalable
+- **Benchmark datasets** — standardized tasks/metrics: **GLUE** (language understanding), **SuperGLUE** (harder GLUE), **SQuAD** (question answering), **WMT** (translation). Advantages: objectivity/standardization, topic coverage, progress tracking over time
+- Why evaluate: verify expectations, find per-task strengths/weaknesses, align with strategy; business side — better decisions, customer experience, innovation
+- AWS tie-in: **Bedrock Model Evaluation** offers automated and human-based model evaluation
