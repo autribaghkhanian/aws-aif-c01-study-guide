@@ -1,0 +1,70 @@
+---
+layout: ../layouts/ContentLayout.astro
+title: "Consolidated Service Index"
+subtitle: "One-line service matching"
+description: "One-line service matching for every AWS service on the AIF-C01 exam."
+---
+import StepFlow from '../components/StepFlow.astro';
+
+## Core AI services
+
+- **SageMaker** — build/train/deploy ML, full-control to no-code
+- **Transcribe** — **speech→text**; domain models, PII masking
+- **Polly** — **text→speech**; voices, style/speed/pitch
+- **Translate** — languages; real-time + batch; custom terminology
+- **Comprehend** — text insight: keywords, phrases, **sentiment**, classification
+- **Comprehend Medical** — medical PII/entities
+- **Lex** — **chatbots**, voice + text
+- **Rekognition** — computer vision\*
+- **Textract** — document data extraction\*
+- **Personalize** — recommendations\*
+- **Fraud Detector** — fraud\*
+
+*\(Starred services aren't in this course but appear on the exam's service list.\)*
+
+## GenAI
+
+- **Bedrock** — FMs via one API, serverless; Guardrails, Agents, Model Evaluation, Prompt Management
+- **JumpStart** — pre-trained models in your VPC
+- **PartyRock** — no-code playground
+- **Q Developer** — code
+- **Q Business** — enterprise data
+
+## SageMaker pipeline features
+
+Know the order — orchestrated end-to-end by **SageMaker Pipelines**:
+
+<StepFlow
+  steps={[
+    { title: 'Data Wrangler / Canvas', note: 'low/no-code data prep' },
+    { title: 'Feature Store', note: 'store/share features; time travel' },
+    { title: 'Training', note: 'at scale, built-in/custom algorithms' },
+    { title: 'MLflow / Experiments', note: 'track metrics, fine-tuning experiments' },
+    { title: 'Processing', note: 'scripts/notebooks; model evaluation' },
+    { title: 'Model Registry', note: 'catalog, versions, approval status' },
+    { title: 'Deployment', note: 'instance-type choice, performance/cost' },
+    { title: 'Model Monitor', note: 'production quality; continuous + scheduled batch' },
+  ]}
+/>
+
+## Responsible AI
+
+- **Clarify** — bias
+- **Model Monitor** — drift
+- **A2I** — human review
+- **Model Cards** — governance docs + risk ratings
+- **Bedrock Guardrails** — filters, topics, redaction, grounding
+
+## Security & governance
+
+- **IAM** — permissions
+- **KMS / ACM / CloudHSM** — keys / certs / HSM
+- **Macie** — sensitive-data classification
+- **PrivateLink & VPC endpoints** — private connectivity
+- **Config** — configuration state
+- **CloudTrail** — API activity
+- **Inspector** — vulnerabilities
+- **Audit Manager** — your compliance evidence
+- **Artifact** — AWS's compliance reports
+- **Trusted Advisor** — best-practice checks
+- **CloudWatch** — metrics, logs, alarms
