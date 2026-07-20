@@ -233,7 +233,7 @@ Themes: multi-AZ resilience, IAM least privilege, VPC endpoints, edge security (
 - **Video** — most resource-intensive (why it lags)
 - **Multimodal** — most complex models
 
-**Secondary criteria** (the GlobalTech chatbot checklist — 8 items): **cost** (licensing + compute) · **modality** · **latency** (accurate-but-slow fails real-time needs) · **multilingual support** (or split translation into a separate model) · **model size** (memory/CPU/GPU/storage vs. your infrastructure) · **complexity** (accuracy vs. tuning/training burden) · **customization** (fine-tunable with your data, brand voice) · **input/output token length** (long queries, answers, whole conversations without cutoff)
+**Secondary criteria** (an 8-item chatbot-selection checklist): **cost** (licensing + compute) · **modality** · **latency** (accurate-but-slow fails real-time needs) · **multilingual support** (or split translation into a separate model) · **model size** (memory/CPU/GPU/storage vs. your infrastructure) · **complexity** (accuracy vs. tuning/training burden) · **customization** (fine-tunable with your data, brand voice) · **input/output token length** (long queries, answers, whole conversations without cutoff)
 
 **Universal trade-offs**: speed → smaller model; accuracy → larger/slower; both → extraordinary cost. Constraints force sub-optimal (smaller) choices. Strict **GRC** requirements may force on-prem/private hosting.
 
@@ -549,7 +549,7 @@ Supporting practices:
 
 # CONSOLIDATED SERVICE INDEX (one-line service matching)
 
-**Core AI services**: SageMaker (build/train/deploy ML, full-control to no-code) · Transcribe (**speech→text**; domain models, PII masking) · Polly (**text→speech**; voices, style/speed/pitch) · Translate (languages; real-time + batch; custom terminology) · Comprehend (text insight: keywords, phrases, **sentiment**, classification) · Comprehend Medical (medical PII/entities) · Lex (**chatbots**, voice + text) · Rekognition (computer vision)* · Textract (document data extraction)* · Personalize (recommendations)* · Fraud Detector (fraud)* — *(starred services aren't in this course but appear on the exam's service list)*
+**Core AI services**: SageMaker (build/train/deploy ML, full-control to no-code) · Transcribe (**speech→text**; domain models, PII masking) · Polly (**text→speech**; voices, style/speed/pitch) · Translate (languages; real-time + batch; custom terminology) · Comprehend (text insight: keywords, phrases, **sentiment**, classification) · Comprehend Medical (medical PII/entities) · Lex (**chatbots**, voice + text) · Rekognition (computer vision)* · Textract (document data extraction)* · Personalize (recommendations)* · Fraud Detector (fraud)* — *(starred services aren't covered in depth in these notes but appear on the exam's service list)*
 
 **GenAI**: Bedrock (FMs via one API, serverless; Guardrails, Agents, Model Evaluation, Prompt Management) · JumpStart (pre-trained models in your VPC) · PartyRock (no-code playground) · Q Developer (code) · Q Business (enterprise data)
 
