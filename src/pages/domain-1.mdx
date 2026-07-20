@@ -9,14 +9,170 @@ import Callout from '../components/Callout.astro';
 import StepFlow from '../components/StepFlow.astro';
 import HierarchyDiagram from '../components/HierarchyDiagram.astro';
 
-## test section one
+## 1.1 The Concept Hierarchy
 
 <HierarchyDiagram />
 
-<Callout>test</Callout>
+Core term pairs to keep straight:
 
-<StepFlow steps={[{ title: 'A' }, { title: 'B' }]} />
+- **ML algorithm** (the recipe/procedure) vs. **AI model** (the trained result: algorithm + data)
+- **Training** (teaching the model with large amounts of data — the most time/resource-intensive phase) vs. **inferencing** (using the trained model to make predictions on new data)
+- **Model fairness** (predictions don't disadvantage any group) vs. **model fit** (predictions accurately capture the underlying patterns — [see §4.3 for overfitting/underfitting](../domain-4/#43-bias--variance))
 
-## test section two
+## 1.2 Neural Networks (the factory analogy)
 
-<ComparisonTable caption="t" columns={['A', 'B', 'C']} rows={[['1', '2', '3'], ['4', '5', '6']]} />
+- **Input layer** = loading dock: each incoming item is one **feature** (a pixel, a measurement, a key/value pair)
+- **Hidden layers** = assembly workers (**neurons**): each transforms what it receives and passes it on; layers do progressively more complex work (pixel color → edge detection → shape detection)
+- **Output layer** = packaging/shipping: assembles everything into a usable result (e.g., a classification: "does this image contain a cat? → No")
+
+## 1.3 Data Types
+
+<ComparisonTable
+  caption="Data types"
+  columns={['Type', 'Definition', 'Notes']}
+  rows={[
+    ['Labeled', 'Tagged with categories/descriptors', 'Enables supervised learning; faster, more accurate training'],
+    ['Unlabeled', 'No tags', 'Model must find patterns itself (unsupervised learning)'],
+    ['Tabular', 'Rows and columns (spreadsheet-like)', '—'],
+    ['Time-series', 'Timestamped observations at regular intervals', 'Trend analysis, anomaly detection'],
+    ['Image', 'Visual info (images/video)', 'Powers CV tasks: edge/object detection, facial recognition'],
+    ['Structured text', 'Predefined format with fields/tags (CSV, JSON)', 'Overlaps with tabular'],
+    ['Unstructured', 'Freeform text (posts, PDFs)', 'Hardest to analyze; needs NLP'],
+  ]}
+/>
+
+## 1.4 Learning Approaches
+
+- **Supervised** — labeled input/output pairs; model predicts outputs for new data
+- **Unsupervised** — unlabeled data; model discovers patterns, groupings, structure
+- **Reinforcement learning** — learns by trial and error with positive/negative feedback (rewards/penalties)
+- **Self-supervised** — how foundation models pre-train: the model learns meaning/context/relationships from unlabeled data at massive scale ([Domain 2 crossover](../domain-2/))
+
+<Callout>
+  Labeled + predict a <strong>number</strong> → regression · labeled + predict a <strong>category</strong> → classification · unlabeled + find <strong>groups</strong> → clustering · learn by <strong>feedback</strong> → RL
+</Callout>
+
+## 1.5 Core ML Techniques & Algorithms
+
+### Regression (supervised → continuous values, except logistic)
+
+- **Linear** — one independent variable, linear relationship (weight from height)
+- **Multiple** — 2+ independent variables (house price from size + location + bedrooms)
+- **Polynomial** — nth-degree polynomial / curved relationship (ball trajectory)
+- **Logistic** — predicts probability of a **binary** outcome (spam vs. not spam)
+
+### Classification (supervised → categories)
+
+- Email filtering, image recognition, sentiment analysis, medical diagnosis, credit scoring
+
+### Clustering (unsupervised → groups without labels)
+
+- **K-means** — partition into k clusters (customer segmentation by purchase behavior)
+- **Hierarchical** — tree-like structure (grouping documents by similarity)
+- **DBSCAN** — groups dense points, marks isolated low-density points as outliers → **anomaly detection**
+
+### Other
+
+- **KNN (K-Nearest Neighbors)** — classify by neighbors' classes (recommendation engines)
+- **PCA (Principal Component Analysis)** — **dimensionality reduction**: shrink a dataset while keeping important features (facial-recognition preprocessing)
+
+## 1.6 The ML Lifecycle (end to end)
+
+<StepFlow
+  cycle
+  steps={[
+    { title: 'Business goal' },
+    { title: 'Problem framing' },
+    { title: 'Data collection' },
+    { title: 'Pre-processing' },
+    { title: 'Feature engineering' },
+    { title: 'Train/tune/evaluate' },
+    { title: 'Deployment' },
+    { title: 'Monitoring' },
+  ]}
+/>
+
+It's a cycle, not a line — feedback loops back to the start.
+
+- **Business goal** — objectively measurable business value; decide whether ML is even the right tool; frame the problem, review data requirements, cost, production feasibility
+- **Problem framing** — define what's observed vs. what's predicted; identify dependent/independent variables, inputs/outputs
+- **Data collection** — labeling, ingestion (**streaming or batch**), aggregation into storage
+- **Pre-processing** — clean, partition, scale; **identify and mitigate bias** via balancing/augmenting
+- **Feature engineering** (features = model inputs used in training AND inference):
+  - **Selection** — keep relevant features that minimize error
+  - **Transformation** — replace missing/invalid features
+  - **Creation** — derive new features from existing data
+  - **Extraction** — dimensionality reduction (PCA)
+- **Train/tune** — **hyperparameters** = settings that control the algorithm's behavior, set *before* training (vs. weights/parameters, which are *learned*); tuning = finding optimal hyperparameters
+- **Evaluate** — **offline evaluation**: test on a held-out portion of data never used in training
+- **Deploy** — make the model available for inference (MLOps territory)
+- **Monitor** — **explainability** of inferences; **drift detection** (data/concept drift: model used to be right, now isn't) with alerts that can auto-trigger retraining via a model update threshold
+
+### Inference styles
+
+- **Batch** — large dataset, all at once, results analyzed together → when **accuracy/throughput beats speed**
+- **Real-time** — immediate per-request responses (chatbots, self-driving) → when **latency is critical**
+
+### Deployment architectures
+
+- **Self-hosted API** — API Gateway → load balancer → your compute (EC2 auto-scaling group / containers) running a **local copy of the model**; you manage everything
+- **Managed API** — same front end, but inference is delegated privately to a **SageMaker inference endpoint**; less operational overhead
+
+### Model sources
+
+- **Open-source / pre-trained** (Meta, Hugging Face, TensorFlow) vs. **custom models** built in-service (supervised, unsupervised, image processing, text analysis algorithm families)
+
+## 1.7 MLOps
+
+MLOps = DevOps principles extended to ML, plus one new idea:
+
+- **Version control** for **data, code, AND models** — in **three separate, independent repositories**
+- **Automation** — automate anything not requiring human oversight
+- **CI/CD** — extended beyond code to data and models
+- **Model governance** *(unique to MLOps)* — evaluation and transparency for fairness, bias, ethics
+
+Benefits: productivity (automated self-service), reliability, repeatability, **auditability** (versioned inputs/outputs), continuous data & model quality checks.
+
+<StepFlow
+  steps={[
+    { title: 'Data pipeline', note: 'prep → data repo' },
+    { title: 'Build & test pipeline', note: 'build → evaluate → select → code repo' },
+    { title: 'Deployment pipeline', note: '→ model repo' },
+    { title: 'Monitoring pipeline' },
+  ]}
+/>
+
+## 1.8 ML Performance Metrics (classification & regression)
+
+Built from the confusion matrix:
+
+- **Accuracy** = correct ÷ total. *Weakness: misleading on imbalanced data* (always predicting "no fraud" is 99% accurate if fraud is 1%)
+- **Precision** = of predicted positives, how many were right? (penalizes **false positives**)
+- **Recall** = TP ÷ (TP + FN) — of actual positives, how many did we catch? (penalizes **false negatives**)
+- **F1 score** = **harmonic mean of precision and recall**. Use when: classes are **imbalanced** / rare events, FP and FN have different costs, or neither precision nor recall alone suffices
+- **AUC-ROC** — ability to distinguish classes; **0.5 = random guessing** (diagonal line), ~0.67 = breakeven, **&gt;0.9 = optimal**; higher is better
+- **MSE (mean squared error)** — regression; (prediction − actual)² summed; **closer to 0 is better**; squaring punishes big errors
+- **R²** — regression; proportion of the dependent variable's variance explained by the independents; a **model fit** measure; closer to 1 is better
+
+<Callout>
+  Classification → accuracy/precision/recall/F1/AUC-ROC · regression → MSE/R² · imbalanced → F1, not accuracy
+</Callout>
+
+## 1.9 When AI Fits — and When It Doesn't
+
+**Good patterns** (well-defined tasks + lots of data + human oversight where stakes are high):
+
+- Content/data **extraction** (pull financials from an earnings report, text or tables)
+- **Summarization** (long legal contract → clauses, risks, obligations, for human review)
+- **Medical image annotation** (X-ray analysis for pneumonia/cancer indicators — human always oversees)
+- **Drug design** (model 3D protein–drug interactions → candidate compounds for testing)
+
+**Anti-patterns** (accountability, reproducibility, nuanced judgment required):
+
+- **Financial audits** — compliance issues, accuracy problems, no accountability, non-reproducible outputs
+- **Pharma regulatory compliance** — complex human decisions, legal review, accountability
+- **Legal judgments** — nuance/emotion, unwritten social norms, dynamic context, ethics, accountability
+
+Recurring blockers to recognize in exam scenarios: **accountability, reproducibility (nondeterminism), regulatory sign-off, moral judgment**.
+
+**Real-world application workflows** (multi-step; most steps are AI opportunities, often *different* AI per step): autonomous vehicles (computer vision), virtual assistants (speech recognition + NLP + text-to-speech), e-commerce recommendations, real-time fraud detection, demand forecasting.
