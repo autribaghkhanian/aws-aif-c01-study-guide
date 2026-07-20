@@ -1,6 +1,7 @@
 ---
 import { NAV, url, normalizePath } from '../lib/site';
 import ThemeToggle from './ThemeToggle.astro';
+import SearchModal from './SearchModal.astro';
 const current = normalizePath(Astro.url.pathname);
 ---
 <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
@@ -36,6 +37,7 @@ const current = normalizePath(Astro.url.pathname);
         ))}
       </nav>
     </details>
+    <SearchModal />
     <ThemeToggle />
   </div>
 </header>
