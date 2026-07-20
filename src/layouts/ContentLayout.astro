@@ -1,0 +1,41 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Toc from '../components/Toc.astro';
+import PrevNext from '../components/PrevNext.astro';
+
+interface Heading { depth: number; slug: string; text: string }
+interface Props {
+  frontmatter: { title: string; subtitle?: string; description?: string };
+  headings?: Heading[];
+}
+const { frontmatter, headings = [] } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2);
+---
+<BaseLayout title={`${frontmatter.title} · AIF-C01 Study Guide`} description={frontmatter.description}>
+  <div class="mx-auto flex max-w-5xl gap-10 px-4 py-8">
+    <main class="min-w-0 flex-1">
+      <h1 class="text-3xl font-bold tracking-tight">{frontmatter.title}</h1>
+      {frontmatter.subtitle && (
+        <p class="mt-1 text-slate-500 dark:text-slate-400">{frontmatter.subtitle}</p>
+      )}
+      {toc.length > 0 && (
+        <details class="mt-5 rounded-lg border border-slate-200 px-3 py-2 lg:hidden dark:border-slate-800">
+          <summary class="cursor-pointer text-sm font-semibold">On this page</summary>
+          <div class="mt-2"><Toc headings={toc} /></div>
+        </details>
+      )}
+      <article class="prose prose-slate mt-6 max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-h2:border-b prose-h2:border-slate-200 prose-h2:pb-2 dark:prose-h2:border-slate-800">
+        <slot />
+      </article>
+      <PrevNext />
+    </main>
+    {toc.length > 0 && (
+      <aside class="hidden w-60 shrink-0 lg:block">
+        <div class="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto">
+          <p class="mb-2 px-2 text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400">On this page</p>
+          <Toc headings={toc} />
+        </div>
+      </aside>
+    )}
+  </div>
+</BaseLayout>

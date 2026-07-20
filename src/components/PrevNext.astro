@@ -1,0 +1,21 @@
+---
+import { NAV, url, normalizePath } from '../lib/site';
+const current = normalizePath(Astro.url.pathname);
+const idx = NAV.findIndex((n) => normalizePath(url(n.href)) === current);
+const prev = idx > 0 ? NAV[idx - 1] : undefined;
+const next = idx >= 0 && idx < NAV.length - 1 ? NAV[idx + 1] : undefined;
+---
+<nav class="mt-10 flex flex-wrap gap-3 border-t border-slate-200 pt-5 dark:border-slate-800" aria-label="Previous and next section">
+  {prev && (
+    <a href={url(prev.href)} class="group max-w-full rounded-lg border border-slate-200 px-4 py-2 hover:border-amber-400 dark:border-slate-800 dark:hover:border-amber-500">
+      <span class="block text-xs text-slate-500 dark:text-slate-400">← Previous</span>
+      <span class="block text-sm font-medium group-hover:text-amber-700 dark:group-hover:text-amber-300">{prev.label}</span>
+    </a>
+  )}
+  {next && (
+    <a href={url(next.href)} class="group ml-auto max-w-full rounded-lg border border-slate-200 px-4 py-2 text-right hover:border-amber-400 dark:border-slate-800 dark:hover:border-amber-500">
+      <span class="block text-xs text-slate-500 dark:text-slate-400">Next →</span>
+      <span class="block text-sm font-medium group-hover:text-amber-700 dark:group-hover:text-amber-300">{next.label}</span>
+    </a>
+  )}
+</nav>

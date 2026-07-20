@@ -1,0 +1,28 @@
+---
+interface Props {
+  steps: { title: string; note?: string }[];
+  cycle?: boolean;
+}
+const { steps, cycle = false } = Astro.props;
+---
+<ol class="not-prose my-6 flex flex-col gap-1.5 md:flex-row md:flex-wrap md:items-center">
+  {steps.map((step, i) => (
+    <li class="flex flex-col gap-1.5 md:flex-row md:items-center">
+      <div class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-800 dark:bg-slate-900 md:max-w-48">
+        <p class="text-sm font-semibold">
+          <span class="mr-1 text-amber-600 dark:text-amber-400">{i + 1}.</span>{step.title}
+        </p>
+        {step.note && <p class="mt-0.5 text-xs text-slate-600 dark:text-slate-400">{step.note}</p>}
+      </div>
+      {i < steps.length - 1 && (
+        <span aria-hidden="true" class="pl-3 text-slate-400 md:px-0.5">
+          <span class="md:hidden">↓</span>
+          <span class="hidden md:inline">→</span>
+        </span>
+      )}
+    </li>
+  ))}
+  {cycle && (
+    <li class="pl-3 text-xs text-slate-500 italic md:pl-1 dark:text-slate-400">↺ loops back to the start</li>
+  )}
+</ol>

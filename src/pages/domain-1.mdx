@@ -1,0 +1,22 @@
+---
+layout: ../layouts/ContentLayout.astro
+title: "Domain 1 — Fundamentals of AI and ML"
+subtitle: "20% of the exam"
+description: "Concept hierarchy, learning approaches, core algorithms, the ML lifecycle, MLOps, and performance metrics."
+---
+import ComparisonTable from '../components/ComparisonTable.astro';
+import Callout from '../components/Callout.astro';
+import StepFlow from '../components/StepFlow.astro';
+import HierarchyDiagram from '../components/HierarchyDiagram.astro';
+
+## test section one
+
+<HierarchyDiagram />
+
+<Callout>test</Callout>
+
+<StepFlow steps={[{ title: 'A' }, { title: 'B' }]} />
+
+## test section two
+
+<ComparisonTable caption="t" columns={['A', 'B', 'C']} rows={[['1', '2', '3'], ['4', '5', '6']]} />

@@ -1,0 +1,50 @@
+---
+interface Props {
+  caption: string;
+  columns: string[];
+  rows: string[][];
+}
+const { caption, columns, rows } = Astro.props;
+---
+<figure class="not-prose my-6">
+  <figcaption class="sr-only">{caption}</figcaption>
+  <div class="hidden overflow-x-auto md:block">
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr class="border-b-2 border-slate-300 text-left dark:border-slate-700">
+          {columns.map((col) => (
+            <th class="px-3 py-2 font-semibold" set:html={col} />
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((cells) => (
+          <tr class="border-b border-slate-200 align-top dark:border-slate-800">
+            {cells.map((cell, i) =>
+              i === 0 ? (
+                <th scope="row" class="px-3 py-2 text-left font-semibold" set:html={cell} />
+              ) : (
+                <td class="px-3 py-2 leading-relaxed" set:html={cell} />
+              ),
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <div class="space-y-3 md:hidden">
+    {rows.map((cells) => (
+      <div class="rounded-lg border border-slate-200 bg-slate-50/50 p-3 dark:border-slate-800 dark:bg-slate-900/50">
+        <p class="mb-2 border-b border-slate-200 pb-2 font-semibold dark:border-slate-800" set:html={cells[0]} />
+        <dl class="space-y-2 text-sm">
+          {cells.slice(1).map((cell, i) => (
+            <div>
+              <dt class="text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400" set:html={columns[i + 1]} />
+              <dd class="mt-0.5 leading-relaxed" set:html={cell} />
+            </div>
+          ))}
+        </dl>
+      </div>
+    ))}
+  </div>
+</figure>
