@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PrevNext from '../components/PrevNext.astro';
+import facts from '../data/high-yield.json';
+---
+<BaseLayout title="High-Yield Facts · AIF-C01 Study Guide" description="28 last-pass review facts for the AWS AI Practitioner exam, as a list or flashcards.">
+  <main class="mx-auto max-w-3xl px-4 py-8">
+    <h1 class="text-3xl font-bold tracking-tight">High-Yield Facts</h1>
+    <p class="mt-1 text-slate-500 dark:text-slate-400">28 last-pass review facts. Switch to flashcards to quiz yourself.</p>
+
+    <div class="mt-5 inline-flex rounded-lg border border-slate-200 p-0.5 dark:border-slate-800" role="group" aria-label="View mode">
+      <button id="mode-list" type="button" aria-pressed="true" class="rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 aria-pressed:bg-amber-100 aria-pressed:text-amber-900 dark:text-slate-400 dark:aria-pressed:bg-amber-900/40 dark:aria-pressed:text-amber-200">List</button>
+      <button id="mode-cards" type="button" aria-pressed="false" class="rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 aria-pressed:bg-amber-100 aria-pressed:text-amber-900 dark:text-slate-400 dark:aria-pressed:bg-amber-900/40 dark:aria-pressed:text-amber-200">Flashcards</button>
+    </div>
+
+    <ol id="fact-list" class="mt-6 space-y-2.5">
+      {facts.map((f) => (
+        <li class="flex gap-3 rounded-lg border border-slate-200 p-3 text-sm leading-relaxed dark:border-slate-800">
+          <span class="font-mono text-xs text-slate-400 tabular-nums dark:text-slate-500">{String(f.id).padStart(2, '0')}</span>
+          <span>{f.fact}</span>
+        </li>
+      ))}
+    </ol>
+
+    <div id="fact-cards" hidden class="mt-6 grid gap-3 sm:grid-cols-2">
+      {facts.map((f) => (
+        <button type="button" aria-expanded="false" class="flashcard min-h-36 rounded-lg border border-slate-200 p-4 text-left align-top text-sm leading-relaxed hover:border-amber-400 aria-expanded:border-amber-400 aria-expanded:bg-amber-50/50 dark:border-slate-800 dark:hover:border-amber-500 dark:aria-expanded:border-amber-500 dark:aria-expanded:bg-amber-950/20">
+          <span class="card-front block">
+            <span class="mb-1.5 block font-mono text-xs text-slate-400 tabular-nums dark:text-slate-500">{String(f.id).padStart(2, '0')}</span>
+            <span class="font-medium">{f.prompt}</span>
+            <span class="mt-2 block text-xs text-slate-400 italic dark:text-slate-500">tap to reveal</span>
+          </span>
+          <span class="card-back block" hidden>
+            <span class="mb-1.5 block font-mono text-xs text-amber-600 tabular-nums dark:text-amber-400">{String(f.id).padStart(2, '0')}</span>
+            <span>{f.fact}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+
+    <PrevNext />
+  </main>
+  <script>
+    const listBtn = document.getElementById('mode-list')!;
+    const cardsBtn = document.getElementById('mode-cards')!;
+    const list = document.getElementById('fact-list')!;
+    const cards = document.getElementById('fact-cards')!;
+
+    function setMode(cardMode: boolean) {
+      list.hidden = cardMode;
+      cards.hidden = !cardMode;
+      listBtn.setAttribute('aria-pressed', String(!cardMode));
+      cardsBtn.setAttribute('aria-pressed', String(cardMode));
+    }
+    listBtn.addEventListener('click', () => setMode(false));
+    cardsBtn.addEventListener('click', () => setMode(true));
+
+    for (const card of document.querySelectorAll<HTMLButtonElement>('.flashcard')) {
+      card.addEventListener('click', () => {
+        const showing = card.getAttribute('aria-expanded') === 'true';
+        card.setAttribute('aria-expanded', String(!showing));
+        card.querySelector<HTMLElement>('.card-front')!.hidden = !showing;
+        card.querySelector<HTMLElement>('.card-back')!.hidden = showing;
+      });
+    }
+  </script>
+</BaseLayout>
