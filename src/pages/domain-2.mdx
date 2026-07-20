@@ -1,0 +1,103 @@
+---
+layout: ../layouts/ContentLayout.astro
+title: "Domain 2 — Fundamentals of Generative AI"
+subtitle: "24% of the exam"
+description: "Tokens, embeddings, and vectors; foundation model types and lifecycle; AWS GenAI services; cost trade-offs."
+---
+import ComparisonTable from '../components/ComparisonTable.astro';
+import Callout from '../components/Callout.astro';
+import StepFlow from '../components/StepFlow.astro';
+
+## 2.1 Core GenAI Terminology
+
+- **Transformer-based LLMs** — understand/generate human-like text (e.g., GPT); learn patterns and relationships between words/phrases from massive text data
+- **Token** — the unit of text a model processes (word, sub-word, character, punctuation — depends on the tokenizer). **Pricing and context limits are measured in tokens**
+- **Chunking** — splitting large text into manageable pieces; **chunk size and chunk overlap (both in tokens) are the critical vector-database tuning parameters**. "Chunking is easy; *good* chunking is hard"
+- **Vector** — ordered series of numbers representing data's features/dimensions; enables similarity math
+- **Embedding** — a **dense vector that captures semantic meaning**; similarity searches run **against embeddings**
+
+<Callout title="Pipeline to internalize">
+  document → chunks → embeddings → vector DB → similarity search
+</Callout>
+
+## 2.2 Foundation Model Types
+
+<ComparisonTable
+  caption="Foundation model types"
+  columns={['Type', 'How it works', 'Primary use']}
+  rows={[
+    ['LLM', 'Trained on vast text', 'Text generation, translation, summarization'],
+    ['Diffusion', 'Starts from noise, progressively adds information until patterns emerge', '<strong>Image generation</strong> (also audio/text)'],
+    ['Multimodal', 'Trained on multiple media types', 'Interpret/generate text + image + audio + video'],
+    ['GAN', '<strong>Two adversarial networks</strong>: generator creates, discriminator judges real vs. fake, until indistinguishable', 'Realistic content generation'],
+    ['VAE', 'Neural network + probabilistic modeling', '<strong>Anomaly detection in time-series data</strong>'],
+  ]}
+/>
+
+## 2.3 Foundation Model Lifecycle
+
+<StepFlow
+  steps={[
+    { title: 'Data selection', note: 'massive datasets; any label/structure status, any media' },
+    { title: 'Model selection', note: 'type per intended use' },
+    { title: 'Pre-training', note: 'self-supervised; learns meaning/context even from unlabeled data' },
+    { title: 'Fine-tuning', note: 'supervised; specialize for a domain' },
+    { title: 'Evaluation', note: 'objective metrics for accuracy + speed' },
+    { title: 'Deployment', note: 'MLOps' },
+    { title: 'Feedback', note: 'post-production monitoring for bias, drift' },
+  ]}
+/>
+
+Key contrast: **pre-training = self-supervised, massive, general · fine-tuning = supervised, small, specific**
+
+## 2.4 GenAI Advantages vs. Disadvantages
+
+**Advantages (7)**: adaptability across tasks/domains · responsiveness (near real-time) · simplicity (summarize, simplify, generate code from natural language) · creativity & exploration (art, prototyping) · data efficiency (learns from relatively small datasets) · personalization (uses conversation context) · scalability (horizontal, distributed)
+
+**Disadvantages (7)**: regulatory violations (needs human review) · social risks (deepfakes, disinformation) · data security/privacy (can be tricked into revealing training data) · toxicity (reflects training-data bias) · **hallucinations** (fabricates facts, states them authoritatively — intrinsic to generation) · interpretability (can't trace reasoning) · **nondeterminism** (same prompt → different outputs; good for creativity, terrible for debugging; reducible but never to zero)
+
+## 2.5 GenAI Business Value Metrics
+
+- **Cross-domain performance** — one model serving multiple use cases (support chatbot also doing sales) → fewer models/fine-tunes
+- **Efficiency** — speed + resource consumption in training and inference
+- **Conversion rate** — % of users taking the recommended action (buying the recommended product)
+- **ARPU** — average revenue per user over a period
+- **CLV (customer lifetime value)** — total expected revenue over the whole customer relationship (retention-driven)
+- **Accuracy** (business sense) — how often output is acceptable (marketing copy approved on first draft → less human rework)
+- Evaluation method: compare **pre-AI vs. post-AI** KPIs (response time, ticket resolution rate, click-through, session duration, task time, error rate). Nuance: the goal isn't zero errors — it's **fewer errors than the human baseline**
+- Newer exam-guide additions in the same spirit: task completion rate, user satisfaction, cost per interaction
+
+## 2.6 AWS GenAI Services
+
+| Service | What to know |
+|---|---|
+| **Amazon Bedrock** | The flagship: **foundation models from Amazon + third parties via a single API**; customize privately via **fine-tuning or RAG**; **fully serverless**. Related features worth recognizing: **Bedrock Guardrails** ([see Domain 4](../domain-4/#45-aws-responsible-ai-tooling)), Bedrock Model Evaluation, Bedrock Prompt Management, Bedrock Data Automation, and **Bedrock Agents / AgentCore** (build task-executing agents) |
+| **SageMaker JumpStart** | **Pre-trained models** (summarization, image gen) you can customize and deploy via UI/SDK; share models/notebooks org-wide; **data encrypted and stays in your VPC** |
+| **PartyRock** | **No-code Bedrock playground** for building/learning GenAI apps and prompt chaining |
+| **Amazon Q Developer** | GenAI coding assistant: generate/debug code, answer questions; aware of your AWS resource inventory |
+| **Amazon Q Business** | Connects to enterprise data repositories; employees query for insights; integrates with **QuickSight** |
+
+<Callout title="Choosing cue">
+  Need FM API without infrastructure → Bedrock · want a pre-trained model in your own VPC to tune/deploy → JumpStart · no-code experimentation → PartyRock · coding help → Q Developer · querying company data → Q Business
+</Callout>
+
+## 2.7 Advantages, Benefits, and Cost Trade-offs of AWS GenAI
+
+**Advantages**: accessibility (prebuilt models/APIs for every skill level) · lower barrier to entry · efficiency (managed scaling/LB/security) · **pay-as-you-go** cost model · speed to market · business alignment
+
+**Benefits**: security (encryption, permissions) · compliance (AWS-side framework compliance is done; you still certify your workload) · **shared responsibility** ([see Domain 5](../domain-5/#52-shared-responsibility-model)) · safety tooling (e.g., SageMaker Clarify for bias)
+
+**Cost trade-offs — everything good costs more**:
+
+- Faster inference / lower latency → bigger models & resources → more cost
+- High availability (multi-AZ), redundancy (cross-region replication/inference, DR) → more cost
+- **Token-based pricing** — LLM services charge per token; whole documents as context = pay accordingly
+- **Provisioned throughput** — you pay for what you **provision, used or not** (vs. pay-as-you-go)
+- Regional coverage — offerings vary per region; cross-region traffic costs
+- Custom model training on managed infra costs more than on-prem, buying you availability/quality
+
+## 2.8 Reference Architecture: GenAI Image App (Well-Architected)
+
+VPC with public/private subnets across **two AZs**; **NAT gateway** for outbound-only private traffic → ALB + EC2 (IAM roles) → **CloudFront** CDN (in front of ALB *and* generated images) with wildcard cert + **WAF web ACL** → **Route 53** DNS → app calls **Bedrock** for image generation (returns **base64** image) → metadata to **DynamoDB**, decoded image to **S3** → user gets a CDN URL. **VPC endpoints** for S3/DynamoDB keep that traffic off the internet.
+
+Themes: multi-AZ resilience, IAM least privilege, VPC endpoints, edge security (CDN + WAF).
