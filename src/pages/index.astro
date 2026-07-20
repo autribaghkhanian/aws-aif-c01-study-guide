@@ -1,8 +1,54 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/site';
+
+const domains = [
+  { href: '/domain-1/', num: 1, title: 'Fundamentals of AI and ML', weight: 20, blurb: 'Concept hierarchy, learning approaches, core algorithms, the ML lifecycle, MLOps, performance metrics, and when AI fits.' },
+  { href: '/domain-2/', num: 2, title: 'Fundamentals of Generative AI', weight: 24, blurb: 'Tokens, embeddings, and vectors; foundation model types and lifecycle; AWS GenAI services; cost trade-offs.' },
+  { href: '/domain-3/', num: 3, title: 'Applications of Foundation Models', weight: 28, blurb: 'Model selection, inference parameters, prompt engineering, RAG and vector databases, fine-tuning, agents, evaluation.', biggest: true },
+  { href: '/domain-4/', num: 4, title: 'Guidelines for Responsible AI', weight: 14, blurb: 'The six pillars, bias and variance, transparency and explainability, AWS responsible-AI tooling, legal risks.' },
+  { href: '/domain-5/', num: 5, title: 'Security, Compliance, and Governance', weight: 14, blurb: 'Prompt-level attacks, shared responsibility, encryption, data protection, governance services and standards.' },
+];
 ---
 <BaseLayout title="AWS AIF-C01 Study Guide">
   <main class="mx-auto max-w-3xl px-4 py-10">
-    <h1 class="text-2xl font-bold">Chrome OK</h1>
+    <p class="text-sm font-semibold tracking-wide text-amber-600 uppercase dark:text-amber-400">AWS Certified AI Practitioner</p>
+    <h1 class="mt-1 text-4xl font-bold tracking-tight">AIF-C01 Study Guide</h1>
+    <p class="mt-4 text-slate-600 dark:text-slate-400">
+      Foundational level: no code, no math derivations — the exam tests <strong>concept recognition</strong>,
+      <strong>service matching</strong>, and <strong>trade-off reasoning</strong> across five domains.
+    </p>
+
+    <ul class="mt-8 space-y-3">
+      {domains.map((d) => (
+        <li>
+          <a href={url(d.href)} class="block rounded-xl border border-slate-200 p-4 transition-colors hover:border-amber-400 dark:border-slate-800 dark:hover:border-amber-500">
+            <div class="flex items-baseline justify-between gap-3">
+              <h2 class="font-semibold">
+                <span class="mr-2 text-amber-600 dark:text-amber-400">Domain {d.num}</span>{d.title}
+              </h2>
+              <span class="shrink-0 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                {d.weight}%{d.biggest && <span class="ml-1 font-normal text-amber-600 dark:text-amber-400">· biggest</span>}
+              </span>
+            </div>
+            <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+              <div class="h-full rounded-full bg-amber-400 dark:bg-amber-500" style={`width: ${d.weight}%`}></div>
+            </div>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{d.blurb}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-8 grid gap-3 sm:grid-cols-2">
+      <a href={url('/services/')} class="rounded-xl border border-slate-200 p-4 hover:border-amber-400 dark:border-slate-800 dark:hover:border-amber-500">
+        <h2 class="font-semibold">Consolidated Service Index</h2>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">One-line service matching for every AWS service on the exam.</p>
+      </a>
+      <a href={url('/high-yield/')} class="rounded-xl border border-slate-200 p-4 hover:border-amber-400 dark:border-slate-800 dark:hover:border-amber-500">
+        <h2 class="font-semibold">High-Yield Facts</h2>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">28 last-pass facts — as a list or tap-to-flip flashcards.</p>
+      </a>
+    </div>
   </main>
 </BaseLayout>
