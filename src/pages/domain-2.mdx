@@ -27,10 +27,10 @@ import StepFlow from '../components/StepFlow.astro';
   columns={['Type', 'How it works', 'Primary use']}
   rows={[
     ['LLM', 'Trained on vast text', 'Text generation, translation, summarization'],
-    ['Diffusion', 'Starts from noise, progressively adds information until patterns emerge', '<strong>Image generation</strong> (also audio/text)'],
+    ['Diffusion', 'Trained by adding noise to data (<strong>forward</strong>), then generates by denoising random noise step by step (<strong>reverse</strong>)', '<strong>Image generation</strong> (also audio/text)'],
     ['Multimodal', 'Trained on multiple media types', 'Interpret/generate text + image + audio + video'],
     ['GAN', '<strong>Two adversarial networks</strong>: generator creates, discriminator judges real vs. fake, until indistinguishable', 'Realistic content generation'],
-    ['VAE', 'Neural network + probabilistic modeling', '<strong>Anomaly detection in time-series data</strong>'],
+    ['VAE', 'Encoder compresses input to a probabilistic <strong>latent space</strong>; decoder samples it to reconstruct or generate data', 'Generate new data; also <strong>anomaly detection</strong> via reconstruction error'],
   ]}
 />
 
@@ -49,6 +49,8 @@ import StepFlow from '../components/StepFlow.astro';
 />
 
 Key contrast: **pre-training = self-supervised, massive, general · fine-tuning = supervised, small, specific**
+
+Two ways to specialize an FM afterward: **fine-tuning** updates the model's **weights** with your labeled data, while **RAG** leaves the weights untouched and instead retrieves relevant context at query time ([cost ladder and depth in §3.7](../domain-3/#37-customizing-foundation-models--the-cost-ladder)).
 
 ## 2.4 GenAI Advantages vs. Disadvantages
 
