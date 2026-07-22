@@ -33,11 +33,21 @@ import Callout from '../components/Callout.astro';
 
 *The statistical pair — distinct from fairness-bias.*
 
-- **Bias** (statistical) — error from an **oversimplified model** approximating a real problem
-- **Variance** — error from **sensitivity to small fluctuations** in training data
-- **Overfitting** — model memorizes training data (noise included); training error → ~0 but **validation error bottoms out then climbs**; = low bias + **high variance**; cause: excess complexity or a too-small fine-tuning set
-- **Underfitting** — model too simple to capture patterns; training AND validation error both stay high; = **high bias** + low variance
-- Goal: the bias–variance trade-off sweet spot
+Two failure modes, each driven by one error source and showing a distinct error signature:
+
+<ComparisonTable
+  caption="Bias vs. variance: the two failure modes"
+  columns={['Fit', 'Error source', 'Training error', 'Validation error', 'Typical cause']}
+  rows={[
+    ['Underfitting', 'High <strong>bias</strong> (too simple, misses patterns)', 'High', 'High', 'Model lacks capacity for the real pattern'],
+    ['Overfitting', 'High <strong>variance</strong> (over-sensitive to noise)', 'Low (→0)', 'High', 'Excess complexity, or a too-small training/fine-tuning set'],
+    ['Balanced (goal)', 'Low bias + low variance', 'Low', 'Low', 'Well-matched capacity: the trade-off sweet spot'],
+  ]}
+/>
+
+<Callout>
+  Two axes, one dial. <strong>High bias → underfitting</strong> (too simple: poor on training <em>and</em> new data). <strong>High variance → overfitting</strong> (too complex: great on training, poor on new data). Turning complexity up trades bias for variance, so you tune to the sweet spot.
+</Callout>
 - Real-world effects: statistical bias → wrong specifically for certain groups (facial recognition); high variance → unpredictable generalization (hiring model favoring clones of past hires)
 - Sources of fairness-bias: **training data bias** (skewed/incomplete data) and **algorithmic bias** (model design)
 
