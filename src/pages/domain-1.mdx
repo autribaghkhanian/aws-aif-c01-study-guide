@@ -78,7 +78,7 @@ Two more terms are **variants of the above**, not a fourth and fifth peer:
 - **Semi-supervised** — a small amount of *labeled* data plus a large amount of *unlabeled* data; sits between supervised and unsupervised.
 
 <Callout>
-  Labeled + predict a <strong>number</strong> → regression · labeled + predict a <strong>category</strong> → classification · unlabeled + find <strong>groups</strong> → clustering · learn by <strong>feedback</strong> → RL
+  Labeled + predict a <strong>number</strong> → regression · labeled + predict a <strong>category</strong> → classification · unlabeled + find <strong>groups</strong> → clustering · unlabeled + fewer <strong>features</strong> → dimensionality reduction · learn by <strong>feedback</strong> → RL
 </Callout>
 
 ## 1.5 Core ML Techniques & Algorithms
@@ -100,10 +100,16 @@ Two more terms are **variants of the above**, not a fourth and fifth peer:
 - **Hierarchical** — tree-like structure (grouping documents by similarity)
 - **DBSCAN** — groups dense points, marks isolated low-density points as outliers → **anomaly detection**
 
+### Dimensionality reduction (unsupervised → fewer features)
+
+Reduce the number of features/dimensions while preserving the most important information and patterns.
+
+- **PCA (Principal Component Analysis)** — the standard algorithm; shrink a dataset while keeping important features (facial-recognition preprocessing)
+- Use cases: **big-data visualization**, **meaningful compression**, **structure discovery**, **feature elicitation**
+
 ### Other
 
 - **KNN (K-Nearest Neighbors)** — classify by neighbors' classes (recommendation engines)
-- **PCA (Principal Component Analysis)** — **dimensionality reduction**: shrink a dataset while keeping important features (facial-recognition preprocessing)
 
 ## 1.6 The ML Lifecycle (end to end)
 
