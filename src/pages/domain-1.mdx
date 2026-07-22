@@ -25,28 +25,57 @@ Core term pairs to keep straight:
 - **Hidden layers** = assembly workers (**neurons**): each transforms what it receives and passes it on; layers do progressively more complex work (pixel color → edge detection → shape detection)
 - **Output layer** = packaging/shipping: assembles everything into a usable result (e.g., a classification: "does this image contain a cat? → No")
 
+Shown many examples, the network *learns* by adjusting the strength of the connections between neurons until they capture the patterns that separate the outputs. Those connection strengths are the model's **weights**, the values learned during training. Once trained, it applies the same weights to data it has never seen.
+
 ## 1.3 Data Types
 
+Two **independent** axes describe any dataset: whether it's *labeled*, and how it's *structured*. Every dataset has a value on each, so they combine (e.g., a folder of tagged photos is **labeled + unstructured**).
+
+**Axis 1: Labeling** (decides which learning approach is even possible)
+
 <ComparisonTable
-  caption="Data types"
-  columns={['Type', 'Definition', 'Notes']}
+  caption="Labeling axis"
+  columns={['Labeling', 'Meaning', 'Enables']}
   rows={[
-    ['Labeled', 'Tagged with categories/descriptors', 'Enables supervised learning; faster, more accurate training'],
-    ['Unlabeled', 'No tags', 'Model must find patterns itself (unsupervised learning)'],
-    ['Tabular', 'Rows and columns (spreadsheet-like)', '—'],
-    ['Time-series', 'Timestamped observations at regular intervals', 'Trend analysis, anomaly detection'],
-    ['Image', 'Visual info (images/video)', 'Powers CV tasks: edge/object detection, facial recognition'],
-    ['Structured text', 'Predefined format with fields/tags (CSV, JSON)', 'Overlaps with tabular'],
-    ['Unstructured', 'Freeform text (posts, PDFs)', 'Hardest to analyze; needs NLP'],
+    ['Labeled', 'Tagged with the target category/value', 'Supervised learning; faster, more accurate training'],
+    ['Unlabeled', 'No tags', 'Unsupervised learning; model finds patterns itself'],
   ]}
 />
 
+**Axis 2: Structure** (the format the data arrives in)
+
+<ComparisonTable
+  caption="Structure axis"
+  columns={['Structure', 'Meaning', 'Examples']}
+  rows={[
+    ['Structured', 'Rows/columns, fixed schema', 'Tabular, time-series, CSV, database tables'],
+    ['Semi-structured', 'Tags/markers, flexible schema', 'JSON, XML'],
+    ['Unstructured', 'No predefined format; hardest to analyze', 'Text and PDFs (need NLP); images and video (need CV)'],
+  ]}
+/>
+
+<Callout>
+  <strong>Structure ≠ labeling.</strong> "Structured" describes the <em>format</em>; "labeled" describes whether the <em>answers</em> are attached. A structured CSV can be labeled or unlabeled, so the old "structured text" row was never a labeling category, just a format.
+</Callout>
+
 ## 1.4 Learning Approaches
 
-- **Supervised** — labeled input/output pairs; model predicts outputs for new data
-- **Unsupervised** — unlabeled data; model discovers patterns, groupings, structure
-- **Reinforcement learning** — learns by trial and error with positive/negative feedback (rewards/penalties)
-- **Self-supervised** — how foundation models pre-train: the model learns meaning/context/relationships from unlabeled data at massive scale ([Domain 2 crossover](../domain-2/))
+AWS groups ML into **three broad approaches**, told apart by what the model learns from:
+
+<ComparisonTable
+  caption="Core learning approaches"
+  columns={['Approach', 'Learns from', 'Goal']}
+  rows={[
+    ['Supervised', 'Labeled input/output pairs', 'Learn a mapping that predicts outputs for new, unseen data'],
+    ['Unsupervised', 'Unlabeled data', 'Discover patterns, structure, and groupings on its own'],
+    ['Reinforcement', 'Rewards/penalties for its own actions', 'Improve decision-making over time by trial and error'],
+  ]}
+/>
+
+Two more terms are **variants of the above**, not a fourth and fifth peer:
+
+- **Self-supervised** — usually grouped under *unsupervised* (it uses unlabeled data), but the model generates its own labels from that data (e.g., predict the next or masked token). This is how foundation models pre-train at massive scale ([Domain 2 crossover](../domain-2/)).
+- **Semi-supervised** — a small amount of *labeled* data plus a large amount of *unlabeled* data; sits between supervised and unsupervised.
 
 <Callout>
   Labeled + predict a <strong>number</strong> → regression · labeled + predict a <strong>category</strong> → classification · unlabeled + find <strong>groups</strong> → clustering · learn by <strong>feedback</strong> → RL
