@@ -26,5 +26,6 @@
   { "id": 25, "prompt": "Match the standard: EU privacy, California, AICPA controls, international, health?", "fact": "GDPR=EU privacy, CCPA=California, SOC=AICPA controls, ISO=international standards, HIPAA=health" },
   { "id": 26, "prompt": "When might a decision tree beat an LLM?", "fact": "Right-size the model: a decision tree may beat an LLM on cost, energy, and explainability" },
   { "id": 27, "prompt": "What four scenario 'tells' mean a human is required, not AI?", "fact": "AI anti-pattern tells: accountability, reproducibility, regulatory sign-off, moral judgment → human required" },
-  { "id": 28, "prompt": "Which business metrics measure GenAI value, and what's the real error-rate goal?", "fact": "Business metrics: conversion rate, ARPU, CLV, task completion, pre-AI vs. post-AI comparison; goal is beating the human baseline, not perfection" }
+  { "id": 28, "prompt": "Which business metrics measure GenAI value, and what's the real error-rate goal?", "fact": "Business metrics: conversion rate, ARPU, CLV, task completion, pre-AI vs. post-AI comparison; goal is beating the human baseline, not perfection" },
+  { "id": 29, "prompt": "When is ML the right tool, and when should you use plain rules instead?", "fact": "Use ML when rules are too hard to code (many variables/overlaps, e.g. spam) or the scale is too big for humans; use simple rules/computation when fixed steps already give the answer" }
 ]

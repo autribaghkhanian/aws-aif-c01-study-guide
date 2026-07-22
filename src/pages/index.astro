@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../lib/site';
+import facts from '../data/high-yield.json';
 
 const domains = [
   { href: '/domain-1/', num: 1, title: 'Fundamentals of AI and ML', weight: 20, blurb: 'Concept hierarchy, learning approaches, core algorithms, the ML lifecycle, MLOps, performance metrics, and when AI fits.' },
@@ -47,7 +48,7 @@ const domains = [
       </a>
       <a href={url('/high-yield/')} class="rounded-xl border border-slate-200 p-4 hover:border-amber-400 dark:border-slate-800 dark:hover:border-amber-500">
         <h2 class="font-semibold">High-Yield Facts</h2>
-        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">28 last-pass facts — as a list or tap-to-flip flashcards.</p>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{facts.length} last-pass facts — as a list or tap-to-flip flashcards.</p>
       </a>
     </div>
   </main>
