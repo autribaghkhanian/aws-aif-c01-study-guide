@@ -28,6 +28,8 @@ import Callout from '../components/Callout.astro';
 - **Diversity** — varied data reflecting real-world complexity (demographics, urban/rural, developed/developing) → better generalization
 - **Curated sources** — reliable, high-quality (verified academic/government databases, expert annotations) → integrity, less noise
 - **Balanced** — equal/proportionate class representation → avoids **class imbalance**; addresses under-/over-sampling
+- **Balanced for the use case** — the task defines what "balanced" means; a pediatric-cancer model is curated to children, not adults
+- **Kept balanced over time** — **regularly audit** for creeping bias and correct it (rebalancing/augmentation mechanics in [§1.6](../domain-1/#16-the-ml-lifecycle-end-to-end))
 
 ## 4.3 Bias & Variance
 
@@ -74,12 +76,15 @@ Two failure modes, each driven by one error source and showing a distinct error 
 | **SageMaker Clarify** | Detect & mitigate **bias** — during training (before deployment) and continuing in production; decision-making insight |
 | **SageMaker Model Monitor** | Production **drift** watch: model drift, data drift, feature distribution, data quality, performance degradation; auto-notifications, no manual metric setup |
 | **Amazon A2I (Augmented AI)** | **Human review** in the prediction loop — verify or override predictions; adaptable (healthcare, finance) |
+| **SageMaker Ground Truth** | **Human data labeling** for training data; for RLHF, humans rank/compare model responses to build the **reward model**. Contrast **A2I** = humans review *predictions* at inference |
 | **SageMaker Model Cards** | **Version-controlled governance documentation**: overview, intended uses, **risk rating**, evaluation metrics, training details; supports audits |
 | **Comprehend Medical** | Detects medical-specific sensitive information (complements Guardrails in health workloads) |
 
 <Callout>
-  <strong>Guardrails</strong> = filter the output · <strong>Clarify</strong> = bias · <strong>Model Monitor</strong> = drift · <strong>A2I</strong> = humans · <strong>Model Cards</strong> = paperwork
+  <strong>Guardrails</strong> = filter the output · <strong>Clarify</strong> = bias · <strong>Model Monitor</strong> = drift · <strong>A2I</strong> = humans · <strong>Model Cards</strong> = your paperwork · <strong>Service Cards</strong> = AWS's paperwork
 </Callout>
+
+**AI Service Cards** (distinct from Model Cards) — AWS-published documentation for each AWS AI service: intended use cases and limitations, responsible-AI design choices, and deployment/performance best practices. The split to remember: **Model Cards = docs you write for *your* model; Service Cards = docs AWS publishes for *its* services.**
 
 ### Model Card risk ratings
 
